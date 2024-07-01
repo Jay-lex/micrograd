@@ -1,0 +1,4 @@
+max_width = 150
+
+blank_lines_upper_bound = 1
+blank_lines_lower_bound = 0

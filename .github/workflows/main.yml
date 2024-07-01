@@ -1,0 +1,23 @@
+name: main
+
+on: [push, pull_request]
+
+env: 
+  CARGO_TERM_COLOR: always
+
+jobs:
+ test:
+    name: Run build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+    - name: Build Project
+      run: cargo build
