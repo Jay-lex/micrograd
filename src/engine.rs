@@ -162,24 +162,25 @@ impl Value {
     }
 
     pub fn backward(&self) {
+        let mut topo: Vec<Value> = vec![];
         let mut visited: HashSet<Value> = HashSet::new();
+        self._build_topo(&mut topo, &mut visited);
+        topo.reverse();
 
         self.borrow_mut().grad = 1.0;
-        self.backward_internal(&mut visited, self);
+        for v in topo {
+            if let Some(backprop) = v.borrow()._backward {
+                backprop(&v.borrow());
+            }
+        }
     }
 
-    fn backward_internal(&self, visited: &mut HashSet<Value>, value: &Value) {
-        if !visited.contains(&value) {
-            visited.insert(value.clone());
-
-            let borrowed_value = value.borrow();
-            if let Some(_backward) = borrowed_value._backward {
-                _backward(&borrowed_value);
-            }
-
-            for child_id in &value.borrow().prev {
-                self.backward_internal(visited, child_id);
-            }
+    fn _build_topo(&self, topo: &mut Vec<Value>, visited: &mut HashSet<Value>) {
+        if visited.insert(self.clone()) {
+            self.borrow().prev.iter().for_each(|child| {
+                child._build_topo(topo, visited);
+            });
+            topo.push(self.clone());
         }
     }
 }

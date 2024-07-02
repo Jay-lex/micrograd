@@ -18,7 +18,7 @@ fn build(v: Value, nodes: &mut HashSet<Value>, edges: &mut HashSet<(Value, Value
 }
 
 fn trace(root: Value) -> (HashSet<Value>, HashSet<(Value, Value)>) {
-    let mut nodes = HashSet::new();
+    let mut nodes = HashSet3::new();
     let mut edges = HashSet::new();
 
     build(root, &mut nodes, &mut edges);
